@@ -13,7 +13,7 @@ You can also create your own middleware to enhance the features of data server a
 You can create data server by `DataServer` class. It handles all sockets which come from data sources. 
 
 The event types of data server are:
- - **init**: called when the data server is started, the function to override is `protected async onInitial(next: Function, context: MiddlewareContext): Promise<void>`;
+ - **initial**: called when the data server is started, the function to override is `protected async onInitial(next: Function, context: MiddlewareContext): Promise<void>`;
  - **end**: called when the data server is closed, the function to override is `protected async onEnd(next: Function, context: MiddlewareContext): Promise<void>`;
  - **data**: called when the data server has received one or several packages, the function to override is `protected async onData(next: Function, msg: ParsedDataType[], context: MiddlewareContext): Promise<void>`;
  - **timeout**: called when reached interval time which is set by developer, the function to override is `protected async onTimeout(next: Function, context: MiddlewareContext): Promise<void>`.
@@ -33,13 +33,35 @@ The event types of web socket server are:
 
 You can create your own middleware for data server or ws server. All middleware use `async/await` to control the asynchronous process and decide whether to call next middleware.
 
-The middleware for ws server need to inherit the `SessionMiddleware` class. And the middleware for data server need to inherit the `TimerMiddleware` class.
+Two types of middlewares are suppored: **function middleware** and **class middleware**.
+
+Here is a simple customed function middleware for data server:
+
+```typescript
+import { TimerEventEnum, MiddlewareContext } from '@vsviz/server';
+
+async function MyTimerMiddleware(next: Function, type: TimerEventEnum, msg: any, context: MiddlewareContext): Promise<void> {
+  if (type === TimerEventEnum.INITIAL) {
+    console.log('Data server has started.');
+  }
+  await next();
+}
+
+``` 
+
+The function middleware need to handle all events, the arguments are: `next: Function, type: MiddlewareEventType, msg: any, context: MiddlewareContext`.
+The `MiddlewareEventType` is `SessionEventEnum` or `TimerEventEnum` which could be imported from @vsvis/server.
+
+The class middleware for ws server need to inherit the `SessionMiddleware` class. 
+And the class middleware for data server need to inherit the `TimerMiddleware` class.
 
 !> Note that the reason why the middleware of data server is named `TimerMiddleware` is that data server provides a clock and will call the callbacks of middlewares when timeout. And this terrible name might be changed in the future.
 
-Here is a simple customed middleware for data server: 
+Here is a simple customed class middleware for data server: 
 
 ```typescript
+import { TimerMiddleware, MiddlewareContext } from '@vsviz/server';
+
 class MyTimerMiddleware extends TimerMiddleware {
   private lastTime = 0;
 
@@ -68,8 +90,39 @@ You can override one or several event callbacks, and the rest will do nothing bu
 
 The argument context for all middlewares is used for store data which could be fetch by all middlewares. It is a key-value map which provides `get` and `set` function. 
 
-<!-- Here are some built-in context data for all middlewares of data server:
- - 
+Here are some built-in context data for all middlewares of data server:
+ - Builder: the builder which could store parsed data and wrap them to binary package, the key is `Symbol.for('builder')`.
 
 Here are some built-in context data for all middlewares of ws server:
- - key: -->
+ - Socket: the web socket connection from client, the key is `Symbol.for('socket')`;
+ - SessionID: the session id for session, the key is `Symbol.for('SessionId')`.
+
+### Arguments of Middleware Context
+
+You can simply pass the class name of middleware to `use` function to enable it. 
+
+But when your customed middleware class contructor need to take some arguments, you will have to override the `copy` function of base middleware class.
+
+Here is en example:
+
+```typescript
+import { TimerMiddleware } from '@vsviz/server';
+
+class MyTimerMiddleware extends TimerMiddleware {
+  private name: string;
+
+  contructor(str: string) {
+    this.name = str;
+  }
+
+  public copy(): MyTimerMiddleware {
+    return new MyTimerMiddleware(this.name);
+  }
+}
+```
+
+And the built-in `TimerSender` middleware works like this way.
+
+### The Communication between Data Server and WS Server
+
+!> Still developing.
