@@ -1,0 +1,23 @@
+{
+  "name": "vsviz-docs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "./node_modules/.bin/docsify serve docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/purpose233/vsviz-docs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/purpose233/vsviz-docs/issues"
+  },
+  "homepage": "https://github.com/purpose233/vsviz-docs#readme",
+  "dependencies": {
+    "docsify-cli": "^4.3.0"
+  }
+}
