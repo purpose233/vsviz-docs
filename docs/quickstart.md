@@ -11,27 +11,16 @@ $ npm install @vsviz/server @vsviz/ui -s
 VSVIZ provides with basic data server and web socket server which can be directly used through very few lines.
 
 ```typescript
-import { 
-  WSServer, 
-  DataServer,
-  TimerSender,
-  TimerMetaDataCollector,
-  SessionMetaDataSender
-} from '@vsviz/server';
+import { VizServer } from '@vsviz/server'
 
 const WSPort: number = 3000;
 const DataPort: number = 9000;
 
-const wsServer = new WSServer(WSPort);
-wsServer
-.use(SessionMetaDataSender)
-.start();
-
-const dataServer = new DataServer(DataPort);
-dataServer
-.use(TimerMetaDataCollector)
-.use(new TimerSender(wsServer, true))
-.start();
+const Server = new VizServer({
+  sessionPort: WSPort,
+  streamPort: DataPort
+});
+Server.start();
 ```
 
 Use tsc to compile the code above, and run it by node. And you get your server running, and it will forward data to clients. 

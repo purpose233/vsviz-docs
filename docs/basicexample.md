@@ -15,7 +15,10 @@ $ npm run buildClient
 # run server, it will listen on port 8080
 $ npm run runServer
 
-# send data from source
-$ python3 ./src/dataSrc00.py meta
-$ python3 ./src/dataSrc00.py data
+# send canvas data from source
+$ python3 ./src/dataCanvas.py data
+
+# send jpeg video data from source (opencv is required)
+$ python3 ./src/dataJPEG.py meta
+$ python3 ./src/dataJPEG.py data
 ```

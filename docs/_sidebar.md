@@ -3,6 +3,7 @@
   - [Quick start](quickstart.md)
   - [Send data](senddata.md)
   - [Enhanced server](enhancedserver.md)
+  - [Customed widget](customedwidget.md)
 
 - API
   
