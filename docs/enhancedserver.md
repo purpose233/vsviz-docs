@@ -17,7 +17,7 @@ The event types of middleware are:
  - **streamMsg**: called when the server has received one or several packages from data source, the function to override is `protected async onStreamMessage(next: Function, context: MiddlewareContext, msg: StreamMessageType[]): Promise<void>`;
  - **connection**: called on session connection reached, the function to override is `protected async onConnection(next: Function, context: MiddlewareContext, msg: IncomingMessage): Promise<void>`;
  - **close**: called on session closed, the function to override is `protected async onClose(next: Function, context: MiddlewareContext): Promise<void>`;
- - **streamMsg**: called on received message from web client, the function to override is `protected async onSessionMessage(next: Function, context: MiddlewareContext, msg: WebSocket.Data): Promise<void>`.
+ - **sessionMsg**: called on received message from web client, the function to override is `protected async onSessionMessage(next: Function, context: MiddlewareContext, msg: WebSocket.Data | ClientMessageType): Promise<void>`.
 
 ## Customed Middleware
 
